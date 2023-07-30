@@ -28,20 +28,14 @@ type TUsers = {
   items: TUser[];
 };
 
-type TParams = {
-  q: string | null;
-  perPage: string | null;
-  page: string | null;
-};
-
 export const fetchUsers = createAsyncThunk<
   TUsers,
-  TParams,
+  string,
   { rejectValue: string }
->("users/fetchUsers", async (params: TParams, thunkApi) => {
+>("users/fetchUsers", async (search: string, thunkApi) => {
   try {
     const response = await fetch(
-      `https://api.github.com/search/users?q=${params.q}&per_page=${params.perPage}&page=${params.page}`
+      `https://api.github.com/search/users${search}`
     );
 
     if (!response.ok) return thunkApi.rejectWithValue("Что-то пошло не так...");
