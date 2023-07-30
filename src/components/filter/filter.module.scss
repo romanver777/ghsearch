@@ -2,8 +2,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
-.totalUsers{
+.totalUsers {
   font-size: 0.875rem;
   color: rgba(0, 0, 0, 0.6);
 }
@@ -23,4 +24,48 @@
   &:hover {
     background-color: rgba(208, 215, 222, 0.35);
   }
+}
+.sortName{
+  font-weight: 600;
+}
+.filterMenu {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  width: 250px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: rgba(31, 35, 40, 0.12) 0px 1px 3px,
+    rgba(66, 74, 83, 0.12) 0px 8px 24px;
+  z-index: 2;
+}
+.menuList {
+  margin: 0;
+  padding: 9px;
+}
+.menuItem {
+  list-style-type: none;
+  display: flex;
+}
+.itemLink {
+  color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  box-sizing: border-box;
+  align-items: center;
+  font-size: 0.8125rem;
+  text-decoration: none;
+  transition: 0.3s;
+  padding: 7px 10px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(208, 215, 222, 0.35);
+    transition: 0.3s;
+  }
+}
+.active {
+  background-color: rgba(208, 215, 222, 0.35);
 }

@@ -13,7 +13,7 @@ const App = () => {
       <Main>
         <Routes>
           <Route path="/" element={<PageIndex />} />
-          <Route path="/search" element={<PageSearch />} />
+          <Route path="/search/:name" element={<PageSearch />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Main>

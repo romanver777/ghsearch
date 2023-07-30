@@ -1,24 +1,20 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { useDispatch } from "react-redux";
+import { setDefault } from "../../store/sort-users-reducer";
+
 import style from "./search.module.scss";
 
 const Search = () => {
-  const location = useLocation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [value, setValue] = useState("");
-  const page = 1;
-  const perPage = 100;
 
   const handleFilterUpdate = () => {
-    const queryParams = new URLSearchParams(location.search);
-
-    queryParams.set("q", value);
-    queryParams.set("per_page", String(perPage));
-    queryParams.set("page", String(page));
-
-    navigate(`/search?${queryParams.toString()}`);
+    dispatch(setDefault());
+    navigate(`/search/users?q=${value}`);
   };
 
   const handleSearchClick = () => {
@@ -28,7 +24,7 @@ const Search = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.code == "Enter" && value.trim().length > 0) {
+    if (e.key == "Enter" && value.trim().length > 0) {
       handleFilterUpdate();
     }
   };

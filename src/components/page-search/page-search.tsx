@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { TRootState, TAppDispatch } from "../../store/store";
@@ -17,20 +17,33 @@ const PageSearch = () => {
   const users = useSelector((state: TRootState) => state.users.users?.items);
   const loading = useSelector((state: TRootState) => state.users.loading);
   const error = useSelector((state: TRootState) => state.users.error);
+  const filter = useSelector((state: TRootState) => state.sort.active);
+  const filterList = useSelector((state: TRootState) => state.sort.list);
 
   const { search } = useLocation();
-  const searchParams = useMemo(() => new URLSearchParams(search), [search]);
-
-  const getParams = (searchParams: URLSearchParams) => {
-    const q = searchParams.get("q");
-    const perPage = searchParams.get("per_page");
-    const page = searchParams.get("page");
-
-    return { q, perPage, page };
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
-    void dispatch(fetchUsers(getParams(searchParams)));
+    const defaultParams = search.split("&").slice(0, 1).join("&");
+    const sortMax = "&sort=repositories&order=desc";
+    const sortMin = "&sort=repositories&order=asc";
+
+    switch (filter) {
+      case filterList[1]:
+        navigate(`/search/users${defaultParams}${sortMax}`);
+        break;
+      case filterList[2]:
+        navigate(`/search/users${defaultParams}${sortMin}`);
+        break;
+      default:
+        navigate(`/search/users${defaultParams}`);
+    }
+  }, [filter]);
+
+  useEffect(() => {
+    if (search.length) {
+      void dispatch(fetchUsers(search));
+    }
   }, [search]);
 
   if (loading) return <Message text="Загружаем..." />;
