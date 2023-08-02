@@ -24,6 +24,7 @@ const PageSearch = () => {
   const error = useSelector((state: TRootState) => state.users.error);
 
   const perPage = 30;
+  const limitUsers = 1000;
 
   const { search } = useLocation();
   const navigate = useNavigate();
@@ -56,9 +57,10 @@ const PageSearch = () => {
 
   const getTotalPages = (length: number | undefined, perPage: number) => {
     if (length == undefined) return;
-    const pages = Math.ceil(length / perPage);
-    if (pages > 100) return 100;
-    return pages;
+    if (length > limitUsers) {
+      return Math.ceil(limitUsers / perPage);
+    }
+    return Math.ceil(length / perPage);
   };
 
   const handleSetPage = (page: string) => {
@@ -86,7 +88,6 @@ const PageSearch = () => {
       ) : (
         <>
           <Filter />
-          {/* <Filter type={filterType} /> */}
           <div className={style.content}>
             <CardList users={users} />
           </div>
