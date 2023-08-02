@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { useSelector } from "react-redux/es/hooks/useSelector";
@@ -9,42 +9,72 @@ import { fetchUsers } from "../../store/fetch-users-reducer";
 import Filter from "../filter/filter";
 import CardList from "../card-list/card-list";
 import Message from "../message/message";
+import Pagination from "../pagination/pagination";
+import AFPagination from "af-pagination";
 
 import style from "./page-search.module.scss";
 
 const PageSearch = () => {
   const dispatch: TAppDispatch = useDispatch();
   const users = useSelector((state: TRootState) => state.users.users?.items);
+  const usersLength = useSelector(
+    (state: TRootState) => state.users.users?.total_count
+  );
   const loading = useSelector((state: TRootState) => state.users.loading);
   const error = useSelector((state: TRootState) => state.users.error);
-  const filter = useSelector((state: TRootState) => state.sort.active);
-  const filterList = useSelector((state: TRootState) => state.sort.list);
+
+  const perPage = 30;
 
   const { search } = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const defaultParams = search.split("&").slice(0, 1).join("&");
-    const sortMax = "&sort=repositories&order=desc";
-    const sortMin = "&sort=repositories&order=asc";
+  const getPage = () => {
+    const url = new URLSearchParams(search);
+    const currentPage = url.get("page") || 1;
 
-    switch (filter) {
-      case filterList[1]:
-        navigate(`/search/users${defaultParams}${sortMax}`);
-        break;
-      case filterList[2]:
-        navigate(`/search/users${defaultParams}${sortMin}`);
-        break;
-      default:
-        navigate(`/search/users${defaultParams}`);
-    }
-  }, [filter]);
+    return +currentPage;
+  };
+
+  const [page, setPage] = useState(getPage());
 
   useEffect(() => {
     if (search.length) {
-      void dispatch(fetchUsers(search));
+      const url = new URLSearchParams(search);
+      const user = url.get("q") || "";
+      const sort = url.get("order") || "";
+      const currPage = url.get("page") || "";
+
+      if (!currPage) setPage(1);
+
+      let params = `?q=${user}`;
+      if (sort) params += `&sort=repositories&order=${sort}`;
+      if (+currPage > 1) params += `&page=${currPage}`;
+
+      void dispatch(fetchUsers(params));
     }
   }, [search]);
+
+  const getTotalPages = (length: number | undefined, perPage: number) => {
+    if (length == undefined) return;
+    const pages = Math.ceil(length / perPage);
+    if (pages > 100) return 100;
+    return pages;
+  };
+
+  const handleSetPage = (page: string) => {
+    let params;
+    if (search.includes("&page")) {
+      params = search.split("&").slice(0, -1).join("&");
+    } else {
+      params = search;
+    }
+    if (+page > 1) {
+      navigate(`${params}&page=${page}`);
+    } else {
+      navigate(`${params}`);
+    }
+    setPage(+page);
+  };
 
   if (loading) return <Message text="Загружаем..." />;
   if (error) return <Message text="Что-то пошло не так..." />;
@@ -56,9 +86,24 @@ const PageSearch = () => {
       ) : (
         <>
           <Filter />
+          {/* <Filter type={filterType} /> */}
           <div className={style.content}>
             <CardList users={users} />
           </div>
+          <Pagination>
+            <AFPagination
+              current_page={page}
+              set_page={(page: string) => handleSetPage(page)}
+              total_pages={getTotalPages(usersLength, perPage)}
+              activeStyles={{
+                color: "blue",
+                backgroundColor: "rgba(208, 215, 222, 0.35)",
+                border: "none",
+              }}
+              hoverStyles={{ backgroundColor: "rgba(208, 215, 222, 0.35)" }}
+              style={{ border: "none" }}
+            />
+          </Pagination>
         </>
       )}
     </>
