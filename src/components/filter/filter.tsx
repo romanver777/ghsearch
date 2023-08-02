@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { TRootState } from "../../store/store";
@@ -14,6 +15,9 @@ const Filter = () => {
   );
   const sortType = useSelector((state: TRootState) => state.sort.active);
   const sortList = useSelector((state: TRootState) => state.sort.list);
+
+  const { search } = useLocation();
+  const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -38,7 +42,29 @@ const Filter = () => {
 
   const handleFilterClick = (item: string) => {
     setOpen(false);
-    dispatch(setActive(item));
+
+    const defaultParams = search.split("&").slice(0, 1).join("&");
+    const sortMax = "&sort=repositories&order=desc";
+    const sortMin = "&sort=repositories&order=asc";
+
+    switch (item) {
+      case sortList[1]:
+        {
+          dispatch(setActive(sortList[1]));
+          navigate(`/search/users${defaultParams}${sortMax}`);
+        }
+        break;
+      case sortList[2]:
+        {
+          dispatch(setActive(sortList[2]));
+          navigate(`/search/users${defaultParams}${sortMin}`);
+        }
+        break;
+      default: {
+        dispatch(setActive(sortList[0]));
+        navigate(`/search/users${defaultParams}`);
+      }
+    }
   };
 
   return (
