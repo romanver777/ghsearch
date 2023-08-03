@@ -1,17 +1,80 @@
 .card {
-  border: 1px solid;
   border: 1px solid #d0d7de;
   border-radius: 5px;
   color: rgba(0, 0, 0, 0.6);
   padding: 15px;
-  font-size: 0.875rem;    
+  font-size: 0.875rem;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.header {
+  position: relative;
+  display: flex;
+  width: 100%;
   align-items: center;
 }
-.imgWrap{
+.imgWrap {
   width: 30px;
   height: 30px;
   border-radius: 50%;
   overflow: hidden;
   margin-right: 10px;
+}
+.btnSort {
+  font-size: 0.75rem;
+  height: 26px;
+  width: auto;
+  color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(208, 215, 222, 0.2);
+  border: 1px solid #d0d7de;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 6px;
+  position: absolute;
+  right: 0;
+
+  &:hover {
+    background-color: rgba(208, 215, 222, 0.35);
+  }
+}
+.body {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.bio {
+  font-size: 0.84375rem;
+  line-height: 1.4;
+  margin-bottom: 5px;
+}
+.location{
+  font-size: 0.75rem;
+  margin-bottom: 5px;
+}
+.content {
+  font-size: 0.75rem;
+  display: flex;
+  gap: 15px;
+  text-transform: capitalize;
+}
+.prop {
+  position: relative;
+
+  &:after {
+    content: ".";
+    position: absolute;
+    right: -9px;
+    top: -3px;
+  }
+
+  &:last-child {
+    &:after {
+      content: none;
+    }
+  }
 }
