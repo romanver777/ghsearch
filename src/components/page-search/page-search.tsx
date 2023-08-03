@@ -5,6 +5,7 @@ import { useSelector } from "react-redux/es/hooks/useSelector";
 import { TRootState, TAppDispatch } from "../../store/store";
 import { useDispatch } from "react-redux";
 import { fetchUsers } from "../../store/fetch-users-reducer";
+import { setActive } from "../../store/sort-users-reducer";
 
 import Filter from "../filter/filter";
 import CardList from "../card-list/card-list";
@@ -22,6 +23,8 @@ const PageSearch = () => {
   );
   const loading = useSelector((state: TRootState) => state.users.loading);
   const error = useSelector((state: TRootState) => state.users.error);
+  const filter = useSelector((state: TRootState) => state.sort.active);
+  const sortList = useSelector((state: TRootState) => state.sort.list);
 
   const perPage = 30;
   const limitUsers = 1000;
@@ -44,6 +47,16 @@ const PageSearch = () => {
       const user = url.get("q") || "";
       const sort = url.get("order") || "";
       const currPage = url.get("page") || "";
+
+      if (sort == "desc") {
+        dispatch(setActive(sortList[1]));
+      }
+      if (sort == "asc") {
+        dispatch(setActive(sortList[2]));
+      }
+      if (!sort && filter !== sortList[0]) {
+        dispatch(setActive(sortList[0]));
+      }
 
       if (!currPage) setPage(1);
 

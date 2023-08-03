@@ -3,13 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { TRootState } from "../../store/store";
-import { useDispatch } from "react-redux";
-import { setActive } from "../../store/sort-users-reducer";
 
 import style from "./filter.module.scss";
 
 const Filter = () => {
-  const dispatch = useDispatch();
   const totalUsers = useSelector(
     (state: TRootState) => state.users.users?.total_count
   );
@@ -50,18 +47,15 @@ const Filter = () => {
     switch (item) {
       case sortList[1]:
         {
-          dispatch(setActive(sortList[1]));
           navigate(`/search/users${defaultParams}${sortMax}`);
         }
         break;
       case sortList[2]:
         {
-          dispatch(setActive(sortList[2]));
           navigate(`/search/users${defaultParams}${sortMin}`);
         }
         break;
       default: {
-        dispatch(setActive(sortList[0]));
         navigate(`/search/users${defaultParams}`);
       }
     }
